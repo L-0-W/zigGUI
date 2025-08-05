@@ -1,11 +1,14 @@
 @vs vs
 in vec4 position;
 in vec4 color0;
+in int widgetID0;
+flat out int widgetID;
 out vec4 color;
 
 
 void main() {
     color = color0;
+    widgetID = widgetID0;
     
     vec4 pos = position;
     gl_Position = pos;
@@ -18,6 +21,7 @@ layout(binding = 0) uniform vs_params {
     vec2 resolution_f;
 };
 
+flat in int widgetID;
 in vec4 color;
 out vec4 frag_color;
 
@@ -39,7 +43,13 @@ void main() {
     vec2 size = vec2(150.0, 30.0);
     
     vec4  u_colorRect   = vec4(0.176, 0.243, 0.314, 1.0); // The color of rectangle
-    vec4  u_colorBorder = vec4(0.788,0.345,0.314,1.0); // The color of (internal) border
+    vec4  u_colorBorder;
+    
+    if (widgetID == 0) {
+        u_colorBorder = vec4(1.0,1.0,1.0,1.0);
+    } else {
+        u_colorBorder = vec4(0.500,0.345,0.314,1.0); // The color of (internal) border
+    }
     
     vec4  u_cornerRadiuses = vec4(15);
     
