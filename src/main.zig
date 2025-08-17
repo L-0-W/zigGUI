@@ -20,12 +20,6 @@ const VS_PARAMS = struct {
     resolution: [2]f32,
 };
 
-var widget = gui.WIDGET.init(.{
-    .x = 0.0,
-    .y = 0.0,
-    .width = 150,
-    .height = 150,
-});
 
 export fn init() void {
 
@@ -34,19 +28,9 @@ export fn init() void {
         .environment = sglue.environment(),
         .logger = .{ .func = slog.func },
     });
-    
-    const my_vertex_buffer = sg.makeBuffer(.{
-        .usage = .{
-        .vertex_buffer = true,
-        },
-    
-        .data = sg.asRange(&[_]f32{
-            -0.5, 0.5,  0.5, 1.0, 0.0, 0.0, 1.0, 0,
-            0.5,  0.5,  0.5, 0.0, 1.0, 0.0, 1.0, 0,
-            0.5,  -0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 0,
-            -0.5, -0.5, 0.5, 1.0, 1.0, 0.0, 1.0, 0,   
-        }),
-    });
+
+
+
     
     state.bind.vertex_buffers[0] = sg.makeBuffer(.{
         .data = sg.asRange(&[_]f32{
@@ -65,13 +49,6 @@ export fn init() void {
             0, 2, 3,
         }),
     });
-
-    const box = gui.GEOMETRY.init(.{
-        .widget_vertex_buffer = my_vertex_buffer, 
-        .widget_index_buffer = state.bind.index_buffer,
-        .widget_draw = .{.faces = 6, .instances = 1},        
-    }); 
-    widget.set_shape(box);
 
     // a shader and pipeline state object
     state.pip = sg.makePipeline(.{
@@ -108,7 +85,13 @@ export fn init() void {
         .load_action = .CLEAR,
         .clear_value = .{ .r = 0.176, .g = 0.243, .b = 0.314, .a = 1.0 },
     };
+
+   gui.WIDGETS_.init_variable();
+   gui.WIDGETS.BUTTON().set_border_color(.{ .r = 0.0, .g = 0.0, .b = 0.0, .a = 0.0 });
+   gui.WIDGETS.BUTTON().set_border_color(.{ .r = 22.0, .g = 55.0, .b = 55.0, .a = 1.0 });
+   
 }
+
 
 export fn frame() void {
     const width = sapp.width();
@@ -126,17 +109,8 @@ export fn frame() void {
     sg.applyBindings(state.bind);
     sg.applyUniforms(shd.UB_vs_params, sg.Range{.ptr = &params, .size = @sizeOf(f32) * 4});
     sg.draw(0, 6, 1);
-  
-
-    widget.set_border_color(.{
-        .r = 20.0,
-        .g = 20.0,
-        .b = 20.0,
-        .a = 100.0,
-    });
-    
-
-    widget.draw();        
+    gui.WIDGETS.draw();
+      
     sg.endPass();
     sg.commit();
 }
