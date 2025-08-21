@@ -182,7 +182,6 @@ pub const WIDGETS_ = struct {
            }
            
            self.head = atual_.next;
-           
         }
         
     }

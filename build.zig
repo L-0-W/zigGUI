@@ -47,6 +47,20 @@ pub fn build(b: *Build) !void {
     } else {
         try buildNative(b, opts);
     }
+
+    const parser_exe = b.addExecutable(.{
+        .name = "parser",
+        .root_source_file = b.path("src/lib/zigml_parser.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    b.installArtifact(parser_exe);
+
+    const run_parser = b.addRunArtifact(parser_exe);
+    run_parser.step.dependOn(b.getInstallStep());
+
+    const run_parser_step = b.step("run-parser", "Run the parser");
+    run_parser_step.dependOn(&run_parser.step);
 }
 
 fn buildNative(b: *Build, opts: Options) !void {
