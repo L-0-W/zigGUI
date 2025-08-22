@@ -54,6 +54,7 @@ pub fn build(b: *Build) !void {
         .target = target,
         .optimize = optimize,
     });
+
     b.installArtifact(parser_exe);
 
     const run_parser = b.addRunArtifact(parser_exe);
